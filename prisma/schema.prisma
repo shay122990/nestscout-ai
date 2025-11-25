@@ -1,0 +1,84 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  USER
+  AGENT
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String?
+  role      UserRole   @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  listings  Listing[]  @relation("AgentListings")
+  favorites Favorite[]
+  inquiries Inquiry[]
+}
+
+model Listing {
+  id             String     @id @default(cuid())
+  title          String
+  slug           String     @unique
+  description    String
+  aiDescription  String?
+  aiIdealFor     String?
+  aiNeighborhood String?
+
+  price          Int
+  currency       String     @default("AED")
+  propertyType   String     // "apartment", "villa", etc.
+  bedrooms       Int
+  bathrooms      Int
+  areaSqm        Int
+
+  city           String
+  neighborhood   String
+  address        String
+  latitude       Float?
+  longitude      Float?
+
+  amenities      String[]   // tags like ["pool", "gym", "near_metro"]
+  images         String[]   // image URLs
+
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  agent          User       @relation("AgentListings", fields: [agentId], references: [id])
+  agentId        String
+
+  favorites      Favorite[]
+  inquiries      Inquiry[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+  createdAt DateTime @default(now())
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  listing   Listing  @relation(fields: [listingId], references: [id])
+  listingId String
+
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
