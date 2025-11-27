@@ -1,65 +1,79 @@
-import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="mx-auto flex max-w-6xl flex-col gap-12 px-4 pb-16 pt-12 md:flex-row md:items-center">
+      <section className="md:w-1/2">
+        <div className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+          AI-powered real estate search
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+          Find your next home
+          <span className="block text-blue-600">with NestScout AI.</span>
+        </h1>
+
+        <p className="mt-4 text-sm leading-relaxed text-neutral-600 sm:text-base">
+          Browse curated properties and let AI help you understand each listing,
+          the neighborhood, and whether it fits your lifestyle, budget, and
+          commute.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/listings"
+            className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Browse listings
+          </Link>
+
+          <Link
+            href="/ai-finder"
+            className="rounded-full border border-neutral-300 px-5 py-2.5 text-sm font-medium text-neutral-700 hover:border-neutral-500"
           >
-            Documentation
-          </a>
+            Try AI home finder
+          </Link>
         </div>
-      </main>
-    </div>
+
+        <div className="mt-6 flex flex-wrap gap-4 text-xs text-neutral-500">
+          <span>✓ Smart summaries for each property</span>
+          <span>✓ Neighborhood insights</span>
+          <span>✓ Shortlists based on your preferences</span>
+        </div>
+      </section>
+
+      {/* Right side – simple mock “card” preview */}
+      <section className="md:w-1/2">
+        <div className="rounded-2xl border bg-white p-4 shadow-sm">
+          <div className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-500">
+            Featured listing
+          </div>
+
+          <div className="overflow-hidden rounded-xl bg-neutral-200">
+            {/* will be an image */}
+            <div className="aspect-[4/3] bg-gradient-to-tr from-blue-500/40 via-purple-500/40 to-amber-500/40" />
+          </div>
+
+          <div className="mt-4 space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-blue-600">
+                  Bright 2BR in Dubai Marina
+                </p>
+                <p className="text-xs text-neutral-500">Dubai Marina · Dubai</p>
+              </div>
+              <p className="text-right text-sm font-semibold text-blue-500">
+                8,500 <span className="text-xs font-normal">AED / month</span>
+              </p>
+            </div>
+
+            <p className="text-xs text-neutral-600">
+              “AI: Ideal for young professionals who want a waterfront lifestyle
+              with quick access to the metro and business districts.”
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
