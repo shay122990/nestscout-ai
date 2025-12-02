@@ -5,8 +5,13 @@ const prisma = new PrismaClient();
 async function main() {
   const agent = await prisma.user.upsert({
     where: { email: "agent@nestscout.ai" },
-    update: {},
+    update: {
+      name: "NestScout Agent",
+      role: "AGENT",
+      authUserId: "seed-agent-auth-id",
+    },
     create: {
+      authUserId: "seed-agent-auth-id",
       email: "agent@nestscout.ai",
       name: "NestScout Agent",
       role: "AGENT",

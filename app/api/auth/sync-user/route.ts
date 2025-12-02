@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { authUserId, email, name } = body;
+    const { authUserId, email, name } = body as {
+      authUserId?: string;
+      email?: string;
+      name?: string | null;
+    };
 
     if (!authUserId || !email) {
       return NextResponse.json(
@@ -13,20 +17,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await prisma.user.upsert({
+    const inferredRole = email === "agent@nestscout.ai" ? "AGENT" : "USER";
+
+    // 1) Try find by authUserId (normal case)
+    let user = await prisma.user.findUnique({
       where: { authUserId },
-      update: { email, name: name ?? null },
-      create: {
+    });
+
+    if (user) {
+      user = await prisma.user.update({
+        where: { authUserId },
+        data: {
+          email,
+          name: name ?? null,
+          role: inferredRole,
+        },
+      });
+
+      return NextResponse.json({ user }, { status: 200 });
+    }
+
+    // 2) If not found, maybe an old row exists with same email but no authUserId yet
+    const byEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (byEmail) {
+      const updated = await prisma.user.update({
+        where: { email },
+        data: {
+          authUserId,
+          name: name ?? null,
+          role: inferredRole,
+        },
+      });
+
+      return NextResponse.json({ user: updated }, { status: 200 });
+    }
+
+    // 3) Otherwise create a brand new user
+    const created = await prisma.user.create({
+      data: {
         authUserId,
         email,
         name: name ?? null,
-        role: "USER",
+        role: inferredRole,
       },
     });
 
-    return NextResponse.json({ user }, { status: 200 });
+    return NextResponse.json({ user: created }, { status: 200 });
   } catch (err) {
-    console.error(err);
+    console.error("SYNC-USER ERROR", err);
     return NextResponse.json(
       { error: "Server error", details: `${err}` },
       { status: 500 }
