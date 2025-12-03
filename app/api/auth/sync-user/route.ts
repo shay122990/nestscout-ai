@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     const inferredRole = email === "agent@nestscout.ai" ? "AGENT" : "USER";
 
-    // 1) Try find by authUserId (normal case)
+    //  Try find by authUserId
     let user = await prisma.user.findUnique({
       where: { authUserId },
     });
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ user }, { status: 200 });
     }
 
-    // 2) If not found, maybe an old row exists with same email but no authUserId yet
+    //  If not found, maybe an old row exists with same email
     const byEmail = await prisma.user.findUnique({
       where: { email },
     });
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ user: updated }, { status: 200 });
     }
 
-    // 3) Otherwise create a brand new user
+    //  Otherwise create a brand new user
     const created = await prisma.user.create({
       data: {
         authUserId,
